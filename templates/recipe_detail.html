@@ -1,0 +1,89 @@
+{% extends "base2.html" %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+    <article class="recipe-detail">
+        <div class="recipe-header">
+            {% if recipe.image %}
+                <img src="/static/images/{{ recipe.image }}" alt="{{ recipe.title }}" class="recipe-image-large">
+            {% else %}
+                <img src="/static/images/default-recipe.jpg" alt="Default recipe image" class="recipe-image-large">
+            {% endif %}
+            
+            <div class="recipe-meta-detail">
+                <h1 class="recipe-title-detail">{{ recipe.title }}</h1>
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <span>Prep Time</span>
+                            <strong>{{ recipe.prep_time }} mins</strong>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-fire"></i>
+                        <div>
+                            <span>Cook Time</span>
+                            <strong>{{ recipe.cook_time }} mins</strong>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-utensils"></i>
+                        <div>
+                            <span>Servings</span>
+                            <strong>{{ recipe.servings }}</strong>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <div>
+                            <span>Difficulty</span>
+                            <strong class="difficulty {{ recipe.difficulty }}">{{ recipe.difficulty }}</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recipe-tags">
+                    {% for tag in recipe.tags %}
+                        <a href="#" class="tag">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+                
+                <div class="recipe-actions">
+
+                    <a href="/home" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to Recipes
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="recipe-content-detail">
+            <section class="ingredients-section">
+                <h2 class="section-title">
+                    <i class="fas fa-list-ul"></i> Ingredients
+                </h2>
+                <ul class="ingredients-list">
+                    {% for ingredient in recipe.ingredients %}
+                    <li>
+                        <span class="ingredient-name">{{ ingredient }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            
+            <section class="instructions-section">
+                <h2 class="section-title">
+                    <i class="fas fa-list-ol"></i> Instructions
+                </h2>
+                <ol class="instructions-list">
+                    {% for instruction in recipe.instructions.split('\n') %}
+                    <li>{{ instruction }}</li>
+                    {% endfor %}
+                </ol>
+            </section>
+        </div>
+    </article>
+{% endblock %}

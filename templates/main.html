@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recipe Book with Horizontal Slideshow</title>
+  <!-- External Fonts & Icons -->
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Anton' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Neucha' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+  <style>
+    /* SLIDESHOW (HORIZONTAL SLIDER) */
+    header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* SLIDESHOW SECTION */
+#slider-wrap {
+  width: 1400px; /* Adjust the width to fit your needs */
+  height: 800px;
+  margin: 150px auto 20px auto; /* Adjust the top margin to accommodate the fixed header */
+  overflow: hidden;
+  border: 1px solid #ccc;
+  position: relative;
+}
+#slider-wrap {
+  width: 100%;
+  max-width: 1500px;
+}
+#slider-wrap ul li {
+  flex: 0 0 100%;
+}
+
+
+/* Adjust the slideshow images' width and height */
+#slider-wrap ul li img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+    #slider-wrap ul {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      transition: transform 0.5s ease-in-out;
+    }
+    #slider-wrap ul li {
+      flex: 0 0 1500px;
+      height: 800px;
+      list-style: none;
+    }
+   
+    /* Arrows */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2em;
+      color: #fff;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    #prev {
+      left: 10px;
+    }
+    #next {
+      right: 10px;
+    }
+    /* Dots (Pagination) */
+    #pagination-wrap {
+      text-align: center;
+      margin-top: 10px;
+    }
+    #pagination-wrap ul {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+    }
+    #pagination-wrap ul li {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #bbb;
+      margin: 5px;
+      cursor: pointer;
+      transition: background-color 0.6s ease;
+    }
+    #pagination-wrap ul li.active {
+      background-color: #717171;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER & NAVIGATION -->
+  <script src="main.js"></script>
+  <header>
+    <div class="container">
+      <div class="navbar">
+        
+  
+        <!-- Logo -->
+        <a href="/" class="logo">
+          <i class="fas fa-utensils"></i>
+          <span>Tasty Recipes</span>
+        </a>
+  
+        <!-- Right Nav Buttons -->
+        <div class="nav-links">
+          <a href="/home"><i class="fas fa-home"></i> Home</a>
+            
+          <form class="search-form" action="/search" method="GET">
+            <input type="text" name="q" placeholder="Search recipes..." required>
+            <button type="submit"><i class="fas fa-search"></i></button>
+          </form>
+          <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i> LogOut</a>
+          <a href="/space" class="nav-link">
+            <i class="fas fa-user"></i> MySpace
+          </a>
+        </div>
+      </div>
+    </div>
+    <nav class="category-nav">
+      <div class="container">
+        <ul class="category-links">
+          <li><a href="#simple-dishes">Simple Dishes</a></li>
+          <li><a href="#main-course">Main Course</a></li>
+          <li><a href="#desserts">Desserts</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+ 
+  
+
+  
+  
+  
+  <!-- SLIDESHOW SECTION -->
+  <div id="slider-wrap">
+    <!-- Arrows -->
+    <div id="prev" class="arrow">&#10094;</div>
+    <div id="next" class="arrow">&#10095;</div>
+    <ul id="slider">
+        <li><img src="{{ url_for('static', filename='images/images (1).jpg') }}" alt="Slide 1"></li>
+        <li><img src="{{ url_for('static', filename='images/images (2).jpg') }}" alt="Slide 2"></li>
+        <li><img src="{{ url_for('static', filename='images/images (3).jpg') }}" alt="Slide 3"></li>
+        <li><img src="{{ url_for('static', filename='images/images.jpg') }}" alt="Slide 4"></li>
+        <li><img src="{{ url_for('static', filename='images/images (1).jpg') }}" alt="Slide 1 Duplicate"></li>
+          </ul>
+  </div>
+  <div id="pagination-wrap">
+    <ul></ul>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // Horizontal slider code
+    document.addEventListener("DOMContentLoaded", function () {
+      const slider = document.getElementById("slider");
+      const slides = slider.querySelectorAll("li");
+      const totalSlides = slides.length;
+      const slideWidth = document.getElementById("slider-wrap").offsetWidth;
+ // Same as #slider-wrap width
+      let slideIndex = 0;
+
+      // Arrows
+      document.getElementById("prev").addEventListener("click", () => {
+        slideIndex--;
+        updateSlider();
+      });
+      document.getElementById("next").addEventListener("click", () => {
+        slideIndex++;
+        updateSlider();
+      });
+
+      // Create pagination dots dynamically
+      const paginationUl = document.querySelector("#pagination-wrap ul");
+      for (let i = 0; i < totalSlides - 1; i++) {
+        const li = document.createElement("li");
+        li.addEventListener("click", () => {
+          slideIndex = i;
+          updateSlider();
+        });
+        paginationUl.appendChild(li);
+      }
+      
+      // Update slider position & active dot
+      function updateSlider() {
+        if (slideIndex < 0) {
+          slideIndex = totalSlides - 2;
+        } else if (slideIndex >= totalSlides) {
+          slider.style.transition = "none";
+          slideIndex = 1;
+          const offset = Math.round(slideIndex * slideWidth);
+          slider.style.transform = `translate3d(${-offset}px, 0, 0)`;
+          setTimeout(() => {
+            slider.style.transition = "transform 0.5s ease-in-out";
+            updateSlider();
+          }, 0);
+          return;
+        }
+        
+        const offset = Math.round(slideIndex * slideWidth);
+        slider.style.transform = `translate3d(${-offset}px, 0, 0)`;
+
+        const dots = paginationUl.querySelectorAll("li");
+        dots.forEach(dot => dot.classList.remove("active"));
+        if (dots[slideIndex] && slideIndex < dots.length) {
+          dots[slideIndex].classList.add("active");
+        } else if (slideIndex >= dots.length) {
+          dots[0].classList.add("active");
+        }
+      }
+      
+      function autoSlide() {
+        slideIndex++;
+        updateSlider();
+      }
+      
+      // Start auto sliding every 3 seconds
+      setInterval(autoSlide, 3000);
+      updateSlider();
+      
+    });
+    
+    
+  </script>
+
+<!-- Headline Section -->
+<section class="section-title">
+  <h1>Cook Tasty and Proficient</h1>
+</section>
+
+{% block content %}
+<section id="simple-dishes" class="recipe-category">
+  <h2>Simple Dishes</h2>
+  <div class="recipes">
+    <div class="recipe">
+      <img src="{{ url_for('static', filename='images/imageBruschita.jpg') }}" alt="Appetizer 1">
+      <h4>Bruschetta</h4>
+      <p>Ingredients: Tomatoes, Basil, Olive Oil...</p>
+      <a href="/recipe/1" class="read-more">Read More</a>
+    </div>
+
+    <div class="recipe">
+      <img src="{{ url_for('static', filename='images/imageStuffedMush.jpg') }}" alt="Appetizer 2">
+      <h4>Stuffed Mushrooms</h4>
+      <p>Ingredients: Mushrooms, Cream Cheese, Garlic...</p>
+      <a href="/recipe/2" class="read-more">Read More</a>
+    </div>
+
+    <div class="recipe">
+      <img src="{{ url_for('static', filename='images/imgCapraseSalad.jpg') }}" alt="Appetizer 3">
+      <h4>Caprese Salad</h4>
+      <p>Ingredients: Mozzarella, Tomatoes, Basil...</p>
+      <a href="/recipe/3" class="read-more">Read More</a>
+    </div>
+  </div>
+</section>
+<section id="main-course" class="recipe-category">
+  <h2>Main Course</h2>
+  <div class="recipes">
+    <div class="recipe">
+      <img src="{{ url_for('static', filename='images/imgGrilledChick.jpg') }}" alt="Main Course 1">
+      <h4>Grilled Chicken</h4>
+      <p>Ingredients: Chicken, Olive Oil, Garlic...</p>
+      <a href="/recipe/4" class="read-more">Read More</a>
+    </div>
+    <div class="recipe">
+      <img src="{{ url_for('static', filename='images/imgVegStirFry.jpg') }}" alt="Main Course 2">
+      <h4>Vegetable Stir Fry</h4>
+      <p>Ingredients: Mixed Vegetables, Soy Sauce, Garlic...</p>
+      <a href="/recipe/5" class="read-more">Read More</a>
+    </div>
+    <div class="recipe">
+      <img src="{{ url_for('static', filename='images/imgSpageti.jpg') }}" alt="Main Course 3">
+      <h4>Spaghetti Carbonara</h4>
+      <p>Ingredients: Spaghetti, Eggs, Parmesan...</p>
+      <a href="/recipe/6" class="read-more">Read More</a>
+    </div>
+  </div>
+</section>
+
+<section id="desserts" class="recipe-category">
+  <h2>Desserts</h2>
+  <div class="recipes">
+    <div class="recipe">
+      <img src="{{ url_for('static', filename='images/imgDBC.jpg') }}" alt="Dessert 1">
+      <h4>Chocolate Cake</h4>
+      <p>Ingredients: Cocoa Powder, Flour, Sugar...</p>
+      <a href="/recipe/7" class="read-more">Read More</a>
+    </div>
+    <div class="recipe">
+      <img src="{{ url_for('static', filename='images/imgFruitTart.jpg') }}" alt="Dessert 2">
+      <h4>Fruit Tart</h4>
+      <p>Ingredients: Pastry, Fresh Fruits, Cream...</p>
+      <a href="/recipe/8" class="read-more">Read More</a>
+    </div>
+    <div class="recipe">
+      <img src="{{ url_for('static', filename='images/imgCheesecake.jpg') }}" alt="Dessert 3">
+      <h4>Cheesecake</h4>
+      <p>Ingredients: Cream Cheese, Eggs, Biscuit Base...</p>
+      <a href="/recipe/9" class="read-more">Read More</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+<section id="doubt-form" class="doubt-form-section">
+  <div class="container">
+    <h2 class="form-heading">Have a Doubt or Query?</h2>
+    <p class="form-subtext">We're here to help. Submit your query below and we’ll get back to you shortly.</p>
+    
+    <form action="/submit_doubt" method="POST" class="doubt-form">
+      <div class="form-group">
+        <label for="previous-email">Previous Email:</label>
+        <input type="email" id="previous-email" name="previous_email" placeholder="Enter your previous email" required>
+      </div>
+      <div class="form-group">
+        <label for="query">Query/Doubt:</label>
+        <textarea id="query" name="query" placeholder="Enter your query or doubt" rows="4" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+      </div>
+      <div class="form-group">
+        <label for="doubts">Select Your Doubt Type:</label>
+        <select id="doubts" name="doubts" required>
+          <option value="" disabled selected>Select one</option>
+          <option value="technical">Technical Issues</option>
+          <option value="billing">Billing Issues</option>
+          <option value="account">Account Issues</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</section>
+
+
+<footer id="contact"> 
+  <p>&copy; 2025 Recipe Book | Contact us at info@recipebook.com</p> 
+</footer>
+<!-- At the bottom of your HTML file, just before closing </body> -->
+
+</body>
+
+</html>

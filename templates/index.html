@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}All Recipes{% endblock %}
+
+{% block content %}
+<section class="hero">
+    {% if username %}
+        <h1>Welcome, {{ username }}!</h1>
+        <p>Discover & Share Amazing Recipes</p>
+        <p>Your personal collection of delicious recipes from around the world</p>
+    {% else %}
+        <h1>Discover & Share Amazing Recipes</h1>
+        <p>Your personal collection of delicious recipes from around the world</p>
+    {% endif %}
+        <a href="/add" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Your Recipe
+        </a>
+    </section>
+
+    <section class="featured-recipes">
+        <h2 class="text-center mb-3">Recently Added Recipes</h2>
+        {% if recipes %}
+            <div class="recipe-grid">
+                {% for recipe in recipes %}
+                <div class="recipe-card">
+                    {% if recipe.image %}
+                        <img src="/static/images/{{ recipe.image }}" alt="{{ recipe.title }}" class="recipe-image">
+                    {% else %}
+                        <img src="/static/images/image.jpg" alt="Default recipe image" class="recipe-image">
+                    {% endif %}
+                    <div class="recipe-content">
+                        <h3 class="recipe-title"><a href="/recipe/{{ recipe._id }}">{{ recipe.title }}</a></h3>
+                        <div class="recipe-meta">
+                            <span><i class="fas fa-clock"></i> {{ recipe.prep_time + recipe.cook_time }} mins</span>
+                            <span><i class="fas fa-utensils"></i> {{ recipe.servings }} servings</span>
+                            <span class="difficulty {{ recipe.difficulty }}">{{ recipe.difficulty }}</span>
+                        </div>
+                        <div class="recipe-tags">
+                            {% for tag in recipe.tags[:3] %}
+                                <a href="#" class="tag">{{ tag }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="recipe-actions">
+                            <a href="/recipe/{{ recipe._id }}" class="btn btn-outline">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="/edit/{{ recipe._id }}" class="btn btn-outline">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="/delete/{{ recipe._id }}" class="btn btn-danger delete-btn">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center">
+                <p>No recipes found. <a href="/add">Add your first recipe!</a></p>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

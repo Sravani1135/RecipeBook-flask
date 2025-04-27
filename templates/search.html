@@ -1,0 +1,54 @@
+{% extends "base2.html" %}
+
+{% block title %}Search Results for "{{ query }}"{% endblock %}
+
+{% block content %}
+    <section class="search-results">
+        <div class="container">
+            <h2 class="search-title">Search Results for "{{ query }}"</h2>
+            
+            {% if recipes %}
+                <div class="recipe-grid">
+                    {% for recipe in recipes %}
+                    <div class="recipe-card">
+                        {% if recipe.image %}
+                            <img src="/static/images/{{ recipe.image }}" alt="{{ recipe.title }}" class="recipe-image">
+                        {% else %}
+                            <img src="/static/images/default-recipe.jpg" alt="Default recipe image" class="recipe-image">
+                        {% endif %}
+                        <div class="recipe-content">
+                            <h3 class="recipe-title"><a href="/recipe/{{ recipe._id }}">{{ recipe.title }}</a></h3>
+                            <div class="recipe-meta">
+                                <span><i class="fas fa-clock"></i> {{ recipe.prep_time + recipe.cook_time }} mins</span>
+                                <span><i class="fas fa-utensils"></i> {{ recipe.servings }} servings</span>
+                                <span class="difficulty {{ recipe.difficulty }}">{{ recipe.difficulty }}</span>
+                            </div>
+                            <div class="recipe-tags">
+                                {% for tag in recipe.tags[:3] %}
+                                    <a href="#" class="tag">{{ tag }}</a>
+                                {% endfor %}
+                            </div>
+                            <div class="recipe-actions">
+                                <a href="/recipe/{{ recipe._id }}" class="btn btn-outline">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <div class="no-results-content">
+                        <i class="fas fa-search fa-3x"></i>
+                        <h3>No recipes found matching "{{ query }}"</h3>
+                        <p>Try different search terms or add a new recipe</p>
+                        <a href="/add" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add New Recipe
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

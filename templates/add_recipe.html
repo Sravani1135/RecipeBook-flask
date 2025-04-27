@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Recipe{% endblock %}
+
+{% block content %}
+    <div class="recipe-form">
+        <h2>Add New Recipe</h2>
+        
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Recipe Title*</label>
+                <input type="text" id="title" name="title" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="image">Recipe Image</label>
+                <input type="file" id="image" name="image" class="form-control" accept="image/*">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="prep_time">Prep Time (minutes)</label>
+                    <input type="number" id="prep_time" name="prep_time" class="form-control" min="0" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="cook_time">Cook Time (minutes)</label>
+                    <input type="number" id="cook_time" name="cook_time" class="form-control" min="0" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="servings">Servings</label>
+                    <input type="number" id="servings" name="servings" class="form-control" min="1" value="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="difficulty">Difficulty</label>
+                    <select id="difficulty" name="difficulty" class="form-control">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="tags">Tags (comma separated)</label>
+                <input type="text" id="tags" name="tags" class="form-control" placeholder="e.g., italian, pasta, dinner">
+            </div>
+            
+            <div class="form-group">
+                <label for="ingredients">Ingredients* (one per line)</label>
+                <textarea id="ingredients" name="ingredients" class="form-control" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="instructions">Instructions*</label>
+                <textarea id="instructions" name="instructions" class="form-control" required></textarea>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Recipe
+                </button>
+                <a href="/" class="btn btn-outline">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

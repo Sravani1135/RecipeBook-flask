@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+
+{% block title %}My Space - Recipe Book{% endblock %}
+
+{% block content %}
+    <h2>Your Recipes</h2>
+    <div class="recipes-list">
+        {% for recipe in recipes %}
+            <div class="recipe-card">
+                <img src="{{ url_for('static', filename='images/' + recipe['image']) }}" alt="{{ recipe['title'] }}">
+                <h3>{{ recipe['title'] }}</h3>
+                <p><strong>Prep Time:</strong> {{ recipe['prep_time'] }} minutes</p>
+                <p><strong>Cook Time:</strong> {{ recipe['cook_time'] }} minutes</p>
+                <p><strong>Servings:</strong> {{ recipe['servings'] }}</p>
+                <p><strong>Difficulty:</strong> {{ recipe['difficulty'] }}</p>
+                <p><strong>Tags:</strong> {{ recipe['tags'] | join(', ') }}</p>
+                <a href="{{ url_for('recipe', recipe_id=recipe['_id']) }}" class="btn-view">View Recipe</a>
+            </div>
+        {% else %}
+            <p>No recipes found. Start adding some!</p>
+        {% endfor %}
+    </div>
+{% endblock %}
